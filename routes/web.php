@@ -50,8 +50,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'update' => 'manager.users.update',
             'destroy' => 'manager.users.destroy',
         ]);
-        Route::resource('reports', ReportController::class);
         Route::patch('manager/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('manager.users.toggle-status');
+        Route::resource('reports', ReportController::class);
     });
 
     // Crew Outlet routes  

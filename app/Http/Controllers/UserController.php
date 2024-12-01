@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -39,9 +40,15 @@ class UserController extends Controller
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'role' => 'required|string',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        $user->update($request->only('nama', 'username', 'role'));
+        $data = $request->only('nama', 'username', 'role');
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user->update($data);
 
         return redirect()->route('manager.users.index');
     }
@@ -58,7 +65,10 @@ class UserController extends Controller
         $user->is_active = !$user->is_active;
         $user->save();
 
-        return redirect()->route('manager.users.index');
+        return response()->json([
+            'success' => true,
+            'is_active' => $user->is_active
+        ]);
     }
 }
 
