@@ -128,4 +128,43 @@ class ReportController extends Controller
 
         return redirect()->back()->with('success', 'Report created successfully');
     }
+
+    public function managerStockReports()
+    {
+        $reports = Report::with(['user', 'outlet'])
+            ->where('type', 'stock')
+            ->latest()
+            ->paginate(10);
+
+        return Inertia::render('Reports/StockReportManager', [
+            'reports' => $reports
+        ]);
+    }
+
+    public function managerFinancialReports()
+    {
+        $reports = Report::with(['user', 'outlet'])
+            ->where('type', 'financial')
+            ->latest()
+            ->paginate(10);
+
+        return Inertia::render('Reports/FinancialReportManager', [
+            'reports' => $reports
+        ]);
+    }
+
+    public function validateReport(Report $report, Request $request)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:validated,rejected'
+        ]);
+
+        $report->update([
+            'status' => $validated['status'],
+            'validated_by' => Auth::id(),
+            'validated_at' => now()
+        ]);
+
+        return redirect()->back()->with('success', 'Report status updated successfully');
+    }
 }

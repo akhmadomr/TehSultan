@@ -15,7 +15,13 @@ const navigationMenus = {
     manager: [
         { name: 'Dashboard', route: 'manager.dashboard' },
         { name: 'Users Management', route: 'manager.users.index' },
-        { name: 'Reports', route: 'reports.index' }
+        { 
+            name: 'Reports',
+            children: [
+                { name: 'Stock Reports', route: 'manager.reports.stock' },
+                { name: 'Financial Reports', route: 'manager.reports.financial' }
+            ]
+        }
     ],
     crewoutlet: [
         { name: 'Dashboard', route: 'crew.dashboard' },
@@ -23,8 +29,8 @@ const navigationMenus = {
         { 
             name: 'Laporan',
             children: [
-                { name: 'Laporan Keuangan', route: 'financial.reports' }
-                // Remove stock.reports since we're using stock.index
+                { name: 'Laporan Keuangan', route: 'financial.reports' },
+                { name: 'Laporan Stock', route: 'stock.index' } // Changed from financial.stocks to stock.index
             ]
         }
     ],

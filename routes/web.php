@@ -56,6 +56,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         // Add StockItem routes
         Route::resource('stock-items', StockItemController::class)->except(['show']);
+        
+        // Manager Reports Routes
+        Route::get('/manager/reports/stock', [ReportController::class, 'managerStockReports'])
+            ->name('manager.reports.stock');
+        Route::get('/manager/reports/financial', [ReportController::class, 'managerFinancialReports'])
+            ->name('manager.reports.financial');
+        Route::patch('/manager/reports/{report}/validate', [ReportController::class, 'validateReport'])
+            ->name('manager.reports.validate');
     });
 
     // Crew Outlet routes  
