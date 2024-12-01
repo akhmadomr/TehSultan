@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
@@ -8,6 +8,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
 import { Link, usePage } from '@inertiajs/vue3'
 
 const userRole = computed(() => usePage().props.auth.user.role)
+const showReportsMenu = ref(false)
 
 // Define navigation menus per role
 const navigationMenus = {
@@ -19,7 +20,13 @@ const navigationMenus = {
     crewoutlet: [
         { name: 'Dashboard', route: 'crew.dashboard' },
         { name: 'Stock', route: 'stock.index' },
-        { name: 'Sales', route: 'sales.index' }
+        { 
+            name: 'Laporan',
+            children: [
+                { name: 'Laporan Keuangan', route: 'financial.reports' }
+                // Remove stock.reports since we're using stock.index
+            ]
+        }
     ],
     gudang: [
         { name: 'Dashboard', route: 'gudang.dashboard' },
@@ -45,9 +52,26 @@ const navigationMenus = {
                         <!-- Navigation Links -->
                         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <template v-for="item in navigationMenus[userRole]" :key="item.name">
-                                <NavLink :href="route(item.route)" :active="route().current(item.route)">
-                                    {{ item.name }}
-                                </NavLink>
+                                <template v-if="!item.children">
+                                    <NavLink :href="route(item.route)" :active="route().current(item.route)">
+                                        {{ item.name }}
+                                    </NavLink>
+                                </template>
+                                <div v-else class="relative flex items-center" @mouseenter="showReportsMenu = true" @mouseleave="showReportsMenu = false">
+                                    <button class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out h-full">
+                                        {{ item.name }}
+                                    </button>
+                                    <div v-show="showReportsMenu" class="absolute left-0 top-[100%] z-50 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                        <div class="py-1">
+                                            <Link v-for="child in item.children" 
+                                                  :key="child.name"
+                                                  :href="route(child.route)"
+                                                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                {{ child.name }}
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
                             </template>
                         </div>
 

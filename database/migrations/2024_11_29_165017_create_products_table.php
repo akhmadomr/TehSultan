@@ -17,6 +17,7 @@ return new class extends Migration
             $table->boolean('is_default')->default(false);
             $table->decimal('harga', 10, 2);
             $table->string('foto')->nullable();
+            $table->enum('unit', ['stock', 'income', 'outcome'])->default('stock');
             $table->timestamps();
         });
     }

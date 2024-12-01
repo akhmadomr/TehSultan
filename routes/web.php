@@ -8,6 +8,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StockRequestController;
+use App\Http\Controllers\StockItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckRole;
@@ -52,6 +53,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
         Route::patch('manager/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('manager.users.toggle-status');
         Route::resource('reports', ReportController::class);
+        
+        // Add StockItem routes
+        Route::resource('stock-items', StockItemController::class)->except(['show']);
     });
 
     // Crew Outlet routes  
@@ -62,6 +66,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(CheckRole::class . ':crewoutlet')->group(function () {
         Route::resource('stock', StockController::class);
         Route::resource('sales', SaleController::class);
+        Route::get('/financial-reports', [ReportController::class, 'financial'])->name('financial.reports');
+        Route::get('/stock', [ReportController::class, 'stock'])->name('stock.index');
+        Route::post('/stock', [ReportController::class, 'storeStock'])->name('stock.store');
+        // Remove or comment out the old stock-reports routes
+        // Route::get('/stock-reports'...
+        // Route::post('/stock-reports'...
+        Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
     });
 
     // Gudang routes

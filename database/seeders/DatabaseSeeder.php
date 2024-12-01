@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             StockRequestsTableSeeder::class,
             StockTransactionsTableSeeder::class,
             UsersTableSeeder::class,
+            StockItemSeeder::class,
         ]);
 
     }

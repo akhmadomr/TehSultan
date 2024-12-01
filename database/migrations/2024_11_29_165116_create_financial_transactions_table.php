@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('financial_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('report_id')->constrained();
-            $table->decimal('amount', 10, 2);
+            $table->foreignId('product_id')->constrained();
+            $table->decimal('harga', 10, 2);
+            $table->integer('unit_amount');
+            $table->decimal('total_amount', 10, 2);
             $table->enum('type', ['income', 'outcome']);
             $table->text('description')->nullable();
             $table->timestamps();
