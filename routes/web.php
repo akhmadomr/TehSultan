@@ -73,6 +73,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Route::get('/stock-reports'...
         // Route::post('/stock-reports'...
         Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+        Route::get('/stock/{id}', [StockController::class, 'show'])->name('stock.show');
+        Route::put('/stock/{id}', [StockController::class, 'update'])->name('stock.update');
     });
 
     // Gudang routes

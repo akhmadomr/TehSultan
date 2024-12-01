@@ -32,6 +32,9 @@ const form = ref({
 
 const shifts = ['pagi', 'siang'];  // Add this
 
+const isEditing = ref(false);
+const editingReportId = ref(null);
+
 // Initialize form with all default items
 const initializeForm = () => {
     form.value.items = props.defaultItems.map(item => ({
@@ -65,6 +68,10 @@ const openModal = () => {
 
 const closeModal = () => {
     showModal.value = false;
+    isEditing.value = false;
+    editingReportId.value = null;
+    errorMessage.value = '';
+    initializeForm();
 };
 
 const markAllAsCompleted = () => {
@@ -92,27 +99,55 @@ const validateForm = () => {
 };
 
 const submit = () => {
-    console.log('Submitting form with outlet_id:', form.value.outlet_id, 'shift:', form.value.shift);
-    if (!validateForm()) {
-        return;
-    }
+    if (!validateForm()) return;
+
+    const url = isEditing.value 
+        ? `/stock/${editingReportId.value}` 
+        : route('stock.store');
     
-    router.post(route('stock.store'), {
+    const method = isEditing.value ? 'put' : 'post';
+
+    router[method](url, {
         outlet_id: form.value.outlet_id,
-        shift: form.value.shift, // Add this line to include shift in submission
+        shift: form.value.shift,
         items: form.value.items
     }, {
         onSuccess: () => {
             closeModal();
-            form.value.items = [];
-            form.value.shift = ''; // Reset shift
-            form.value.outlet_id = ''; // Reset outlet
         },
         onError: (errors) => {
             console.error('Submission errors:', errors);
             errorMessage.value = Object.values(errors).join(', ');
         }
     });
+};
+
+const editReport = async (reportId) => {
+    try {
+        const response = await axios.get(`/stock/${reportId}`);
+        const reportData = response.data;
+        
+        form.value = {
+            outlet_id: reportData.outlet_id,
+            shift: reportData.shift,
+            items: reportData.items.map(item => ({
+                item_name: item.item_name,
+                initial_stock: item.initial_stock,
+                added_stock: item.added_stock,
+                total_stock: item.total_stock,
+                remaining_stock: item.remaining_stock,
+                used_stock: item.used_stock,
+                status: item.status
+            }))
+        };
+        
+        isEditing.value = true;
+        editingReportId.value = reportId;
+        showModal.value = true;
+    } catch (error) {
+        console.error('Error fetching report:', error);
+        errorMessage.value = 'Failed to load report data';
+    }
 };
 
 const getStatusColor = (status) => {
@@ -183,7 +218,7 @@ const getStatusColor = (status) => {
                         <div v-if="showModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
                             <div class="relative top-20 mx-auto p-5 border w-full max-w-7xl shadow-lg rounded-md bg-white">
                                 <div class="flex justify-between items-center mb-4">
-                                    <h3 class="text-xl font-bold">New Stock Report</h3>
+                                    <h3 class="text-xl font-bold">{{ isEditing ? 'Edit Stock Report' : 'New Stock Report' }}</h3>
                                     <button @click="closeModal" class="text-gray-600 hover:text-gray-800">
                                         <span class="text-2xl">&times;</span>
                                     </button>
