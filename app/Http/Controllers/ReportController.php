@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -27,13 +28,24 @@ class ReportController extends Controller
     {
         $validated = $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
+            'shift' => 'required|in:pagi,siang',  // Add shift validation
             'type' => 'required|in:stock,financial',
+            'total_income' => 'required_if:type,financial|numeric',
+            'total_expense' => 'required_if:type,financial|numeric',
+            'net_income' => 'required_if:type,financial|numeric',
+            'real_cash' => 'required_if:type,financial|numeric',
+            'difference' => 'required_if:type,financial|numeric'
         ]);
 
         $report = Report::create([
             ...$validated,
-            'user_id' => Auth::user()->id,
-            'status' => 'waiting'
+            'user_id' => Auth::id(),
+            'status' => 'waiting',
+            'total_income' => $request->total_income ?? 0,
+            'total_expense' => $request->total_expense ?? 0,
+            'net_income' => $request->net_income ?? 0,
+            'real_cash' => $request->real_cash ?? 0,
+            'difference' => $request->difference ?? 0
         ]);
 
         return redirect()->back()->with('success', 'Report created successfully');
@@ -56,14 +68,15 @@ class ReportController extends Controller
 
     public function financial()
     {
-        $reports = Report::with(['user', 'outlet', 'validator'])
+        $reports = Report::with(['user', 'outlet', 'validator', 'financialItems'])
             ->where('type', 'financial')
             ->where('user_id', Auth::id())
             ->latest()
             ->paginate(10);
 
         return Inertia::render('Reports/Financial', [
-            'reports' => $reports
+            'reports' => $reports,
+            'outlets' => Outlet::all()  // Add this line to provide outlets data
         ]);
     }
 
@@ -127,6 +140,62 @@ class ReportController extends Controller
         }
 
         return redirect()->back()->with('success', 'Report created successfully');
+    }
+
+    public function storeFinancial(Request $request)
+    {
+        $validated = $request->validate([
+            'outlet_id' => 'required|exists:outlets,id',
+            'shift' => 'required|in:pagi,siang',
+            'income_items' => 'required|array',
+            'expense_items' => 'required|array',
+            'real_cash' => 'required|numeric'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $report = Report::create([
+                'outlet_id' => $validated['outlet_id'],
+                'user_id' => Auth::id(),
+                'type' => 'financial',
+                'shift' => $validated['shift'],
+                'status' => 'waiting'
+            ]);
+
+            // Store income items
+            foreach ($request->income_items as $item) {
+                if ($item['units_sold'] > 0) { // Only store items with quantity
+                    $report->financialItems()->create([
+                        'outlet_id' => $validated['outlet_id'],
+                        'type' => 'income',
+                        'item_name' => $item['name'],
+                        'price' => $item['price'],
+                        'quantity' => $item['units_sold'],
+                        'total' => $item['total']
+                    ]);
+                }
+            }
+
+            // Store expense items
+            foreach ($request->expense_items as $item) {
+                if ($item['units_bought'] > 0) { // Only store items with quantity
+                    $report->financialItems()->create([
+                        'outlet_id' => $validated['outlet_id'],
+                        'type' => 'expense',
+                        'item_name' => $item['name'],
+                        'price' => $item['price'],
+                        'quantity' => $item['units_bought'],
+                        'total' => $item['total']
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Financial report created successfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
     }
 
     public function managerStockReports()

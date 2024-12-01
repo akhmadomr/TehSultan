@@ -26,13 +26,7 @@ const navigationMenus = {
     crewoutlet: [
         { name: 'Dashboard', route: 'crew.dashboard' },
         { name: 'Stock', route: 'stock.index' },
-        { 
-            name: 'Laporan',
-            children: [
-                { name: 'Laporan Keuangan', route: 'financial.reports' },
-                { name: 'Laporan Stock', route: 'stock.index' } // Changed from financial.stocks to stock.index
-            ]
-        }
+        { name: 'Financial', route: 'financial.reports' }
     ],
     gudang: [
         { name: 'Dashboard', route: 'gudang.dashboard' },

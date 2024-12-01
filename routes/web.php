@@ -9,6 +9,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StockRequestController;
 use App\Http\Controllers\StockItemController;
+use App\Http\Controllers\FinancialTotalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckRole;
@@ -83,6 +84,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
         Route::get('/stock/{id}', [StockController::class, 'show'])->name('stock.show');
         Route::put('/stock/{id}', [StockController::class, 'update'])->name('stock.update');
+        
+        // Add this inside the middleware group
+        Route::get('/financial-totals/{outlet_id}', [FinancialTotalController::class, 'getLatestTotals'])
+            ->name('financial.totals');
+        Route::post('/reports/financial', [ReportController::class, 'storeFinancial'])
+            ->name('reports.store.financial');
     });
 
     // Gudang routes

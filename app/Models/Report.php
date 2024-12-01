@@ -18,7 +18,9 @@ class Report extends Model
         'user_id',
         'type',
         'status',
-        'shift'  // Add this
+        'shift',
+        'validated_by',
+        'validated_at'
     ];
 
     protected $attributes = [
@@ -27,7 +29,7 @@ class Report extends Model
 
     protected $casts = [
         'validated_at' => 'datetime',
-        'shift' => 'string'
+        'shift' => 'string',
     ];
 
     public function user(): BelongsTo
@@ -53,6 +55,11 @@ class Report extends Model
     public function items(): HasMany
     {
         return $this->hasMany(Stock::class);
+    }
+
+    public function financialItems(): HasMany
+    {
+        return $this->hasMany(FinancialItem::class);
     }
 }
 
