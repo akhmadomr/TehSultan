@@ -158,30 +158,31 @@ function logout() {
     <Head title="Teh Sultan Indonesia" />
 
     <div class="min-h-screen bg-[#f7e2cc]">
-        <!-- Navigation -->
-        <nav class="sticky z-50 top-0 px-12 w-full h-[80px] flex items-center justify-between">
-        <div class="flex items-center">
-        <img src="../../image/tehsultan.png" alt="Join Sistem Logo" class="h-14 object-contain">
-        <span class="ml-4 text-2xl font-bold text-black">Teh Sultan Indonesia</span>
-        </div>
-        <ul class="flex gap-4">
+        <!-- Header -->
+        <nav class="sticky z-50 top-0 px-12 w-full h-[80px] flex items-center justify-between bg-gradient-to-r from-orange-400 to-yellow-500">
+    <div class="flex items-center">
+        <img src="../../image/tehsultan.png" alt="Teh Sultan Logo" class="h-14 object-contain">
+        <span class="ml-4 text-2xl font-bold text-white">Teh Sultan Indonesia</span>
+    </div>
+    <ul class="flex gap-4">
         <li>
-            <a href="#home" class="text-black hover:text-orange-500">Home</a>
+            <a href="/" class="text-white hover:text-orange-500">Home</a>
         </li>
         <li>
-            <a href="#produk" class="text-black hover:text-orange-500">Produk</a>
+            <a href="/produk" class="text-white hover:text-orange-500">Produk</a>
         </li>
         <li>
-            <a href="#outlets" class="text-black hover:text-orange-500">Outlets</a>
+            <a href="#outlets" class="text-white hover:text-orange-500">Outlets</a>
         </li>
         <li>
-            <a href="#about-us" class="text-black hover:text-orange-500">About Us</a>
+            <a href="#about-us" class="text-white hover:text-orange-500">About Us</a>
         </li>
     </ul>
-    
+
     <a v-if="authUser" href="/logout" class="bg-orange-500 px-4 py-2 rounded-full text-white hover:bg-white hover:text-orange-500">Logout</a>
     <a v-else href="/login" class="bg-orange-500 px-4 py-2 rounded-full text-white hover:bg-white hover:text-orange-500">Login</a>
 </nav>
+
 
 
 <section id="home" class="bg-[#f7e2cc] py-16">
@@ -218,11 +219,11 @@ function logout() {
 
 
 <!-- Produk Kami -->
-<section id="produk" class="bg-gradient-to-r from-orange-400 to-yellow-500 text-white py-16 relative">
+<section id="produk" class="bg-[#f7e2cc] py-16 relative">
     <!-- Offset Scroll Fix -->
     <div class="absolute -top-20" id="produk-offset"></div>
     <div class="container mx-auto px-6 text-center">
-        <h2 class="produk-header mb-8 text-4xl sm:text-5xl md:text-6xl">Produk Kami</h2>
+        <h2 class="produk-header mb-8 text-4xl sm:text-5xl md:text-6xl text-black">Produk Kami</h2>
         <div class="produk-container">
             <!-- Produk 1 -->
             <div class="produk-item">
@@ -284,7 +285,6 @@ function logout() {
 
 
 
-
        <!-- Ini Bagian Outlet-->
        <section id="outlets" class="bg-[#f7e2cc] py-16">
   <div class="container mx-auto px-6 text-center">
@@ -316,8 +316,9 @@ function logout() {
       </div>
     </div>
     <div class="button-container">
-      <button class="lihat-outlet-button mt-8">Lihat Outlet Lainnya</button>
-    </div>
+  <a href="/outlet" class="lihat-outlet-button mt-8">Lihat Outlet Lainnya</a>
+</div>
+
   </div>
 </section>
 
@@ -342,10 +343,11 @@ function logout() {
                 Teh Sultan Indonesia adalah minuman khas dari Solo yang dibuat dengan racikan teh asli berkualitas tinggi. 
                 Dengan cita rasa yang autentik, Teh Sultan menghadirkan kesegaran alami dan pengalaman minum teh terbaik.
             </p>
-            <Link href="/about-us" 
-                class="inline-block rounded-lg bg-orange-500 px-6 py-3 text-white hover:bg-orange-600 transition">
-                Selengkapnya
-            </Link>
+            <a href="/about" class="inline-block rounded-lg bg-orange-500 px-6 py-3 text-white hover:bg-orange-600 transition">
+            Selengkapnya
+            </a>
+
+
         </div>
     </div>
 </section>
@@ -366,7 +368,7 @@ function logout() {
             </div>
             <ul class="flex space-x-6 text-sm font-medium">
                 <li>
-                    <a href="#home" class="hover:text-black transition duration-300">Home</a>
+                    <a href="/" class="hover:text-black transition duration-300">Home</a>
                 </li>
                 <li>
                     <a href="#produk" class="hover:text-black transition duration-300">Product</a>
@@ -375,7 +377,7 @@ function logout() {
                     <a href="#outlets" class="hover:text-black transition duration-300">Outlets</a>
                 </li>
                 <li>
-                    <a href="#about-us" class="hover:text-black transition duration-300">About Us</a>
+                    <a href="/about" class="hover:text-black transition duration-300">About Us</a>
                 </li>
             </ul>
         </nav>
