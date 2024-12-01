@@ -212,10 +212,23 @@ class ReportController extends Controller
 
     public function managerFinancialReports()
     {
-        $reports = Report::with(['user', 'outlet'])
+        DB::enableQueryLog();
+        
+        $reports = Report::with(['user', 'outlet', 'financialItems', 'validator'])
             ->where('type', 'financial')
             ->latest()
             ->paginate(10);
+        
+        Log::info('Financial Reports Queries:', [
+            'queries' => DB::getQueryLog()
+        ]);
+
+        // Add logging to check the data
+        Log::info('Financial Reports Data:', [
+            'first_report' => collect($reports->items())->first(),
+            'financial_items_sample' => collect($reports->items())->first()?->financialItems,
+            'total_reports' => $reports->total()
+        ]);
 
         return Inertia::render('Reports/FinancialReportManager', [
             'reports' => $reports
