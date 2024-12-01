@@ -163,29 +163,29 @@ const getStatusColor = (status) => {
     <Head title="Stock Reports" />
 
     <AuthenticatedLayout>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
+        <div class="py-6 sm:py-12 bg-white min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-[#CBF3F0]">
+                    <div class="p-4 sm:p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-bold">Stock Reports</h2>
-                            <button @click="openModal" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                            <h2 class="text-lg sm:text-xl font-semibold text-gray-700">Stock Reports</h2>
+                            <button @click="openModal" class="bg-[#CBF3F0] hover:bg-[#EDD6BE] text-gray-700 px-4 py-2 rounded transition-colors duration-200">
                                 New Report
                             </button>
                         </div>
 
                         <!-- Reports Table -->
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
+                        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-lg border border-[#CBF3F0]">
+                            <table class="min-w-full divide-y divide-[#CBF3F0]">
                                 <thead>
                                     <tr>
-                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sender</th>
-                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Sender</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Date</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Status</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody class="bg-white divide-y divide-[#CBF3F0]">
                                     <tr v-for="report in reports.data" :key="report.id">
                                         <td class="px-6 py-4 whitespace-nowrap text-gray-900">
                                             {{ report.user ? report.user.name || report.user.nama : 'N/A' }}

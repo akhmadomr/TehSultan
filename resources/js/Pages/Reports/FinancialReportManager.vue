@@ -81,58 +81,57 @@ const calculateTotal = (type) => {
     <Head title="Financial Reports" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Financial Reports</h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <table class="min-w-full">
-                            <thead>
-                                <tr>
-                                    <th class="px-6 py-3 border-b-2 border-gray-200 text-left">Date</th>
-                                    <th class="px-6 py-3 border-b-2 border-gray-200 text-left">Outlet</th>
-                                    <th class="px-6 py-3 border-b-2 border-gray-200 text-left">Shift</th>
-                                    <th class="px-6 py-3 border-b-2 border-gray-200 text-left">Status</th>
-                                    <th class="px-6 py-3 border-b-2 border-gray-200 text-left">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="report in reports.data" :key="report.id">
-                                    <td class="px-6 py-4 border-b">{{ formatDate(report.created_at) }}</td>
-                                    <td class="px-6 py-4 border-b">{{ report.outlet?.nama }}</td>
-                                    <td class="px-6 py-4 border-b capitalize">{{ report.shift }}</td>
-                                    <td class="px-6 py-4 border-b">
-                                        <span :class="{
-                                            'px-2 py-1 rounded text-sm': true,
-                                            'bg-yellow-100 text-yellow-800': report.status === 'waiting',
-                                            'bg-green-100 text-green-800': report.status === 'validated',
-                                            'bg-red-100 text-red-800': report.status === 'rejected'
-                                        }">
-                                            {{ report.status }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 border-b">
-                                        <button @click="viewDetails(report)" 
-                                                class="text-blue-600 hover:text-blue-800 mr-2">
-                                            View Details
-                                        </button>
-                                        <button v-if="report.status === 'waiting'"
-                                                @click="updateStatus(report.id, 'validated')"
-                                                class="text-green-600 hover:text-green-800 mr-2">
-                                            Validate
-                                        </button>
-                                        <button v-if="report.status === 'waiting'"
-                                                @click="updateStatus(report.id, 'rejected')"
-                                                class="text-red-600 hover:text-red-800">
-                                            Reject
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <div class="py-6 sm:py-12 bg-white min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-[#CBF3F0]">
+                    <div class="p-4 sm:p-6">
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-700 mb-4">Financial Reports</h2>
+                        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-lg border border-[#CBF3F0]">
+                            <table class="min-w-full divide-y divide-[#CBF3F0]">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Date</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Outlet</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Shift</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Status</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-[#CBF3F0]">
+                                    <tr v-for="report in reports.data" :key="report.id">
+                                        <td class="px-6 py-4 border-b">{{ formatDate(report.created_at) }}</td>
+                                        <td class="px-6 py-4 border-b">{{ report.outlet?.nama }}</td>
+                                        <td class="px-6 py-4 border-b capitalize">{{ report.shift }}</td>
+                                        <td class="px-6 py-4 border-b">
+                                            <span :class="{
+                                                'px-2 py-1 rounded text-sm': true,
+                                                'bg-yellow-100 text-yellow-800': report.status === 'waiting',
+                                                'bg-green-100 text-green-800': report.status === 'validated',
+                                                'bg-red-100 text-red-800': report.status === 'rejected'
+                                            }">
+                                                {{ report.status }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 border-b">
+                                            <button @click="viewDetails(report)" 
+                                                    class="text-blue-600 hover:text-blue-800 mr-2">
+                                                View Details
+                                            </button>
+                                            <button v-if="report.status === 'waiting'"
+                                                    @click="updateStatus(report.id, 'validated')"
+                                                    class="text-green-600 hover:text-green-800 mr-2">
+                                                Validate
+                                            </button>
+                                            <button v-if="report.status === 'waiting'"
+                                                    @click="updateStatus(report.id, 'rejected')"
+                                                    class="text-red-600 hover:text-red-800">
+                                                Reject
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

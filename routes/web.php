@@ -39,7 +39,18 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     // Manager routes
     Route::get('/manager-dashboard', function () {
-        return Inertia::render('Dashboard/ManagerDashboard');
+        $activeUsers = \App\Models\User::where('is_active', true)->count();
+        $financialSummary = \App\Models\FinancialSummary::getFinancialSummary();
+        $latestReports = \App\Models\Report::latest()
+            ->take(5)
+            ->with(['user', 'outlet'])
+            ->get();
+
+        return Inertia::render('Dashboard/ManagerDashboard', [
+            'activeUsers' => $activeUsers,
+            'financialSummary' => $financialSummary,
+            'latestReports' => $latestReports
+        ]);
     })->middleware(CheckRole::class . ':manager')->name('manager.dashboard');
     
     Route::middleware(CheckRole::class . ':manager')->group(function () {

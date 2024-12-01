@@ -127,51 +127,53 @@ const getNetIncome = (report) => {
     <Head title="Financial Reports" />
 
     <AuthenticatedLayout>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="py-6 sm:py-12 bg-white min-h-screen">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
                 <!-- List of Financial Reports -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                    <div class="p-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-[#CBF3F0]">
+                    <div class="p-4 sm:p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-2xl font-bold">Financial Reports</h2>
-                            <button @click="showModal = true" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                            <h2 class="text-lg sm:text-xl font-semibold text-gray-700">Financial Reports</h2>
+                            <button @click="showModal = true" class="bg-[#CBF3F0] hover:bg-[#EDD6BE] text-gray-700 px-4 py-2 rounded transition-colors duration-200">
                                 New Report
                             </button>
                         </div>
 
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">Shift</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">Income</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">Expense</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">Net</th>
-                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="report in reports.data" :key="report.id">
-                                    <td class="px-6 py-4">{{ new Date(report.created_at).toLocaleDateString() }}</td>
-                                    <td class="px-6 py-4">{{ report.shift }}</td>
-                                    <td class="px-6 py-4">Rp {{ formatNumber(getTotalIncome(report)) }}</td>
-                                    <td class="px-6 py-4">Rp {{ formatNumber(getTotalExpense(report)) }}</td>
-                                    <td class="px-6 py-4" :class="getNetIncome(report) < 0 ? 'text-red-500' : 'text-green-500'">
-                                        Rp {{ formatNumber(getNetIncome(report)) }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span :class="{
-                                            'px-2 py-1 rounded-full text-sm': true,
-                                            'bg-yellow-100 text-yellow-800': report.status === 'waiting',
-                                            'bg-green-100 text-green-800': report.status === 'validated',
-                                            'bg-red-100 text-red-800': report.status === 'rejected'
-                                        }">
-                                            {{ report.status }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="overflow-x-auto -mx-4 sm:mx-0 rounded-lg border border-[#CBF3F0]">
+                            <table class="min-w-full divide-y divide-[#CBF3F0]">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Date</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Shift</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Income</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Expense</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Net</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-[#CBF3F0]">
+                                    <tr v-for="report in reports.data" :key="report.id">
+                                        <td class="px-6 py-4">{{ new Date(report.created_at).toLocaleDateString() }}</td>
+                                        <td class="px-6 py-4">{{ report.shift }}</td>
+                                        <td class="px-6 py-4">Rp {{ formatNumber(getTotalIncome(report)) }}</td>
+                                        <td class="px-6 py-4">Rp {{ formatNumber(getTotalExpense(report)) }}</td>
+                                        <td class="px-6 py-4" :class="getNetIncome(report) < 0 ? 'text-red-500' : 'text-green-500'">
+                                            Rp {{ formatNumber(getNetIncome(report)) }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span :class="{
+                                                'px-2 py-1 rounded-full text-sm': true,
+                                                'bg-yellow-100 text-yellow-800': report.status === 'waiting',
+                                                'bg-green-100 text-green-800': report.status === 'validated',
+                                                'bg-red-100 text-red-800': report.status === 'rejected'
+                                            }">
+                                                {{ report.status }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
