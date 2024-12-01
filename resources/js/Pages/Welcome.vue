@@ -207,9 +207,9 @@ function logout() {
             <p class="mb-6 text-lg md:text-xl text-gray-700">
                 Tehnya Wong Solo. Nikmati Kesegaran Alami Dari Teh Sultan Indonesia Dengan Racikan Teh Asli Solo.
             </p>
-            <a href="#produk" 
+            <a href="/login" 
                class="inline-block rounded-lg bg-orange-500 px-6 py-3 text-white text-lg font-medium hover:bg-orange-600 transition">
-                Order Now
+                Start Now
             </a>
         </div>
     </div>
