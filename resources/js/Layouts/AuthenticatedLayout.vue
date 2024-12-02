@@ -46,7 +46,7 @@ const navigationMenus = {
                         <!-- Logo -->
                         <div class="shrink-0 flex items-center">
                             <Link :href="route('dashboard')">
-                                <ApplicationLogo class="block h-9 w-auto fill-current text-[#FFFFFF]" />
+                                <ApplicationLogo class="h-14 object-contain text-[#FFFFFF]" />
                             </Link>
                         </div>
 

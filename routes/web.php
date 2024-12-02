@@ -27,6 +27,18 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
+Route::get('/about', function () {
+    return Inertia::render('AboutUs');
+})->name('about');
+
+Route::get('/produk', function () {
+    return Inertia::render('Produk');
+})->name('produk');
+
+Route::get('/outlets', function () {
+    return Inertia::render('Outlets');
+})->name('outlet');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

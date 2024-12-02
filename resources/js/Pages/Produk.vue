@@ -103,7 +103,7 @@ function logout() {
             <ul class="flex gap-4">
                 <li><a href="/" class="text-white hover:text-orange-500">Home</a></li>
                 <li><a href="/produk" class="text-white hover:text-orange-500">Produk</a></li>
-                <li><a href="/outlet" class="text-white hover:text-orange-500">Outlets</a></li>
+                <li><a href="/outlets" class="text-white hover:text-orange-500">Outlets</a></li>
                 <li><a href="/about" class="text-white hover:text-orange-500">About Us</a></li>
             </ul>
             <a v-if="authUser" href="/logout" class="bg-orange-500 px-4 py-2 rounded-full text-white hover:bg-white hover:text-orange-500">Logout</a>

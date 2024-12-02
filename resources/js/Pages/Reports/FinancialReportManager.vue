@@ -94,6 +94,7 @@ const calculateTotal = (type) => {
                                         <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Outlet</th>
                                         <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Shift</th>
                                         <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Status</th>
+                                        <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Validation Messages</th>
                                         <th class="px-4 sm:px-6 py-3 sm:py-4 bg-[#CBF3F0] text-gray-700 font-semibold text-left">Actions</th>
                                     </tr>
                                 </thead>
@@ -111,6 +112,15 @@ const calculateTotal = (type) => {
                                             }">
                                                 {{ report.status }}
                                             </span>
+                                        </td>
+                                        <td class="px-4 sm:px-6 py-3 sm:py-4">
+                                            <div v-if="report.validation_messages?.length" class="text-yellow-600">
+                                                <div v-for="(message, index) in report.validation_messages" 
+                                                     :key="index"
+                                                     class="text-sm bg-yellow-50 p-2 rounded mb-1">
+                                                    {{ message }}
+                                                </div>
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 border-b">
                                             <button @click="viewDetails(report)" 
@@ -176,6 +186,39 @@ const calculateTotal = (type) => {
                                     <p class="mb-2"><strong>Validated By:</strong> {{ selectedReport.validator?.name }}</p>
                                     <p class="mb-2"><strong>Validated At:</strong> {{ formatDate(selectedReport.validated_at) }}</p>
                                 </template>
+                            </div>
+                            <!-- Add new cash information section -->
+                            <div class="col-span-2 border-t pt-4 mt-4">
+                                <h4 class="font-semibold mb-3 text-gray-700">Cash Information</h4>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div class="bg-blue-50 p-3 rounded">
+                                        <p class="text-sm text-blue-600">Expected Cash</p>
+                                        <p class="text-lg font-semibold text-blue-700">
+                                            {{ formatCurrency(calculateTotal('income') - calculateTotal('expense')) }}
+                                        </p>
+                                    </div>
+                                    <div class="bg-green-50 p-3 rounded">
+                                        <p class="text-sm text-green-600">Real Cash</p>
+                                        <p class="text-lg font-semibold text-green-700">
+                                            {{ formatCurrency(selectedReport.real_cash) }}
+                                        </p>
+                                    </div>
+                                    <div :class="[
+                                        'p-3 rounded',
+                                        Math.abs(selectedReport.difference) > 20000 ? 'bg-red-50' : 'bg-gray-50'
+                                    ]">
+                                        <p :class="[
+                                            'text-sm',
+                                            Math.abs(selectedReport.difference) > 20000 ? 'text-red-600' : 'text-gray-600'
+                                        ]">Difference</p>
+                                        <p :class="[
+                                            'text-lg font-semibold',
+                                            Math.abs(selectedReport.difference) > 20000 ? 'text-red-700' : 'text-gray-700'
+                                        ]">
+                                            {{ formatCurrency(selectedReport.difference) }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

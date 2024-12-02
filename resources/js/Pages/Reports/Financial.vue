@@ -13,10 +13,10 @@ const showModal = ref(false);
 
 // Default items for income
 const defaultIncomeItems = [
-    { name: 'The', price: 3000 },
-    { name: 'Lemon Tea', price: 4000 },
-    { name: 'Milktea', price: 5000 },
-    { name: 'Freecup', price: 0 },
+    { name: 'Teh', price: 3000 },
+    { name: 'Lemon tea', price: 4000 },
+    { name: 'Milk tea', price: 5000 },
+    { name: 'Free cup', price: 0 },
     { name: 'Pentol', price: 500 },
     { name: 'Tahu', price: 500 },
     { name: 'Urat', price: 1000 },

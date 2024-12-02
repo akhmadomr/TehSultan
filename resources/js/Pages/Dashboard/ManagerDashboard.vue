@@ -99,7 +99,7 @@ const getStatusColor = (status) => {
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-2xl sm:text-3xl font-bold text-gray-700">{{ activeUsers }}</p>
+                        <p class="text-2xl sm:text-2xl font-bold text-gray-700">{{ activeUsers }}</p>
                     </div>
 
                     <!-- Income Card -->
@@ -112,7 +112,7 @@ const getStatusColor = (status) => {
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-2xl sm:text-3xl font-bold text-gray-700">{{ formatRupiah(financialSummary.income) }}</p>
+                        <p class="text-2xl sm:text-2xl font-bold text-gray-700">{{ formatRupiah(financialSummary.income) }}</p>
                     </div>
 
                     <!-- Expense Card -->
@@ -125,7 +125,7 @@ const getStatusColor = (status) => {
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-2xl sm:text-3xl font-bold text-gray-700">{{ formatRupiah(financialSummary.expense) }}</p>
+                        <p class="text-2xl sm:text-2xl font-bold text-gray-700">{{ formatRupiah(financialSummary.expense) }}</p>
                     </div>
 
                     <!-- Net Total Card -->
@@ -138,7 +138,7 @@ const getStatusColor = (status) => {
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-2xl sm:text-3xl font-bold text-gray-700">{{ formatRupiah(financialSummary.netTotal) }}</p>
+                        <p class="text-2xl sm:text-2xl font-bold text-gray-700">{{ formatRupiah(financialSummary.netTotal) }}</p>
                     </div>
                 </div>
 

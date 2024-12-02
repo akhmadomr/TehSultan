@@ -16,7 +16,7 @@
             <a href="/produk" class="text-white hover:text-orange-500">Produk</a>
         </li>
         <li>
-            <a href="/outlet" class="text-white hover:text-orange-500">Outlets</a>
+            <a href="/outlets" class="text-white hover:text-orange-500">Outlets</a>
         </li>
         <li>
             <a href="/about" class="text-white hover:text-orange-500">About Us</a>

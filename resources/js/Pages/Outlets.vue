@@ -175,7 +175,7 @@ function logout() {
                     <a href="#outlets" class="text-white hover:text-orange-500">Outlets</a>
                 </li>
                 <li>
-                    <a href="#about-us" class="text-white hover:text-orange-500">About Us</a>
+                    <a href="#about" class="text-white hover:text-orange-500">About Us</a>
                 </li>
             </ul>
 

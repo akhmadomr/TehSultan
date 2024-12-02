@@ -200,10 +200,16 @@ class ReportController extends Controller
 
     public function managerStockReports()
     {
-        $reports = Report::with(['user', 'outlet'])
+        $reports = Report::with(['user', 'outlet', 'items', 'validator'])
             ->where('type', 'stock')
             ->latest()
             ->paginate(10);
+
+        // Add validation messages to each report
+        $reports->getCollection()->transform(function ($report) {
+            $report->validation_messages = $report->getValidationMessages();
+            return $report;
+        });
 
         return Inertia::render('Reports/StockReportManager', [
             'reports' => $reports
@@ -212,23 +218,16 @@ class ReportController extends Controller
 
     public function managerFinancialReports()
     {
-        DB::enableQueryLog();
-        
         $reports = Report::with(['user', 'outlet', 'financialItems', 'validator'])
             ->where('type', 'financial')
             ->latest()
             ->paginate(10);
-        
-        Log::info('Financial Reports Queries:', [
-            'queries' => DB::getQueryLog()
-        ]);
 
-        // Add logging to check the data
-        Log::info('Financial Reports Data:', [
-            'first_report' => collect($reports->items())->first(),
-            'financial_items_sample' => collect($reports->items())->first()?->financialItems,
-            'total_reports' => $reports->total()
-        ]);
+        // Add validation messages to each report
+        $reports->getCollection()->transform(function ($report) {
+            $report->validation_messages = $report->getValidationMessages();
+            return $report;
+        });
 
         return Inertia::render('Reports/FinancialReportManager', [
             'reports' => $reports
