@@ -19,6 +19,22 @@
                       <input v-model="newUser.nama" type="text" id="nama" class="w-full p-2 border border-gray-300 rounded mt-1" required />
                     </div>
                     <div class="mb-4">
+                      <label for="email" class="block text-sm font-medium">Email</label>
+                      <input v-model="newUser.email" type="email" id="email" class="w-full p-2 border border-gray-300 rounded mt-1" />
+                    </div>
+                    <div class="mb-4">
+                      <label for="alamat" class="block text-sm font-medium">Alamat</label>
+                      <textarea v-model="newUser.alamat" id="alamat" class="w-full p-2 border border-gray-300 rounded mt-1"></textarea>
+                    </div>
+                    <div class="mb-4">
+                      <label for="no_telp" class="block text-sm font-medium">No. Telepon</label>
+                      <input v-model="newUser.no_telp" type="text" id="no_telp" class="w-full p-2 border border-gray-300 rounded mt-1" />
+                    </div>
+                    <div class="mb-4">
+                      <label for="tanggal_bergabung" class="block text-sm font-medium">Tanggal Bergabung</label>
+                      <input v-model="newUser.tanggal_bergabung" type="date" id="tanggal_bergabung" class="w-full p-2 border border-gray-300 rounded mt-1" />
+                    </div>
+                    <div class="mb-4">
                       <label for="username" class="block text-sm font-medium">Username</label>
                       <input v-model="newUser.username" type="text" id="username" class="w-full p-2 border border-gray-300 rounded mt-1" required />
                     </div>
@@ -56,6 +72,22 @@
                       <input v-model="editUser.nama" type="text" id="edit-nama" class="w-full p-2 border border-gray-300 rounded mt-1" required />
                     </div>
                     <div class="mb-4">
+                      <label for="edit-email" class="block text-sm font-medium">Email</label>
+                      <input v-model="editUser.email" type="email" id="edit-email" class="w-full p-2 border border-gray-300 rounded mt-1" />
+                    </div>
+                    <div class="mb-4">
+                      <label for="edit-alamat" class="block text-sm font-medium">Alamat</label>
+                      <textarea v-model="editUser.alamat" id="edit-alamat" class="w-full p-2 border border-gray-300 rounded mt-1"></textarea>
+                    </div>
+                    <div class="mb-4">
+                      <label for="edit-no_telp" class="block text-sm font-medium">No. Telepon</label>
+                      <input v-model="editUser.no_telp" type="text" id="edit-no_telp" class="w-full p-2 border border-gray-300 rounded mt-1" />
+                    </div>
+                    <div class="mb-4">
+                      <label for="edit-tanggal_bergabung" class="block text-sm font-medium">Tanggal Bergabung</label>
+                      <input v-model="editUser.tanggal_bergabung" type="date" id="edit-tanggal_bergabung" class="w-full p-2 border border-gray-300 rounded mt-1" />
+                    </div>
+                    <div class="mb-4">
                       <label for="username" class="block text-sm font-medium">Username</label>
                       <input v-model="editUser.username" type="text" id="edit-username" class="w-full p-2 border border-gray-300 rounded mt-1" required />
                     </div>
@@ -83,12 +115,71 @@
                 </div>
               </div>
 
+              <!-- User Details Popup -->
+              <div v-if="showUserDetails" class="popup" @click.self="closeUserDetails">
+                <div class="popup-content max-w-2xl">
+                  <div class="flex justify-between items-center mb-4 pb-3 border-b">
+                    <h2 class="text-xl font-semibold">User Details</h2>
+                    <button @click="closeUserDetails" class="text-gray-500 hover:text-gray-700">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-3">
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">Nama:</label>
+                        <p class="mt-1">{{ selectedUser?.nama }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">Email:</label>
+                        <p class="mt-1">{{ selectedUser?.email }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">Username:</label>
+                        <p class="mt-1">{{ selectedUser?.username }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">Role:</label>
+                        <p class="mt-1">{{ selectedUser?.role }}</p>
+                      </div>
+                    </div>
+                    <div class="space-y-3">
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">Alamat:</label>
+                        <p class="mt-1">{{ selectedUser?.alamat }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">No. Telepon:</label>
+                        <p class="mt-1">{{ selectedUser?.no_telp }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">Tanggal Bergabung:</label>
+                        <p class="mt-1">{{ selectedUser?.tanggal_bergabung }}</p>
+                      </div>
+                      <div>
+                        <label class="text-sm font-medium text-gray-600">Status:</label>
+                        <p class="mt-1">
+                          <span :class="selectedUser?.is_active ? 'bg-green-500' : 'bg-red-500'" 
+                                class="text-white px-2 py-1 rounded-full text-sm">
+                            {{ selectedUser?.is_active ? 'Active' : 'Inactive' }}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- User List Table -->
               <div v-if="users.length" class="overflow-x-auto bg-white shadow-md rounded-lg mt-4">
                 <table class="min-w-full text-sm text-left text-gray-500">
                   <thead>
                     <tr class="bg-gray-100">
                       <th class="px-6 py-3">Nama</th>
+                      <th class="px-6 py-3">Email</th>
                       <th class="px-6 py-3">Username</th>
                       <th class="px-6 py-3">Role</th>
                       <th class="px-6 py-3">Status</th>
@@ -96,8 +187,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="user in users" :key="user.id" class="border-b hover:bg-gray-50">
+                    <tr v-for="user in users" 
+                        :key="user.id" 
+                        class="border-b hover:bg-gray-50 cursor-pointer"
+                        @click="showUserDetail(user)">
                       <td class="px-6 py-4">{{ user.nama }}</td>
+                      <td class="px-6 py-4">{{ user.email }}</td>
                       <td class="px-6 py-4">{{ user.username }}</td>
                       <td class="px-6 py-4">{{ user.role }}</td>
                       <td class="px-6 py-4">
@@ -149,18 +244,28 @@ export default {
       authUser: this.auth,
       showAddUserForm: false,
       showEditUserForm: false,
+      showUserDetails: false,
+      selectedUser: null,
       newUser: {
         nama: '',
+        email: '',
         username: '',
         role: '',
+        alamat: '',
+        no_telp: '',
+        tanggal_bergabung: '',
         password: '',
         password_confirmation: '',
       },
       editUser: {
         id: '',
         nama: '',
+        email: '',
         username: '',
         role: '',
+        alamat: '',
+        no_telp: '',
+        tanggal_bergabung: '',
         password: '',
         password_confirmation: ''
       },
@@ -226,18 +331,34 @@ export default {
       this.editUser = {
         id: user.id,
         nama: user.nama,
+        email: user.email,
         username: user.username,
         role: user.role,
+        alamat: user.alamat,
+        no_telp: user.no_telp,
+        tanggal_bergabung: user.tanggal_bergabung,
         password: '',
         password_confirmation: ''
       };
       this.showEditUserForm = true;
     },
+    showUserDetail(user) {
+      this.selectedUser = { ...user };
+      this.showUserDetails = true;
+    },
+    closeUserDetails() {
+      this.showUserDetails = false;
+      this.selectedUser = null;
+    },
     resetNewUser() {
       this.newUser = {
         nama: '',
+        email: '',
         username: '',
         role: '',
+        alamat: '',
+        no_telp: '',
+        tanggal_bergabung: '',
         password: '',
         password_confirmation: '',
       };
@@ -257,13 +378,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 50;
 }
 
 .popup-content {
   background: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 400px;
+  padding: 24px;
+  border-radius: 8px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 button {
