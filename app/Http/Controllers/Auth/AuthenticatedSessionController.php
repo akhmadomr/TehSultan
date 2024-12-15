@@ -12,7 +12,10 @@ class AuthenticatedSessionController extends Controller
 {
     public function store(LoginRequest $request)
     {
-        $credentials = $request->only('username', 'password');
+        $credentials = array_merge(
+            $request->only('username', 'password'),
+            ['is_active' => 1]
+        );
         
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
@@ -41,7 +44,7 @@ class AuthenticatedSessionController extends Controller
         }
     
         return back()->withErrors([
-            'username' => 'Invalid credentials.',
+            'username' => 'Invalid credentials or account is inactive.',
         ]);
     }
     public function create()

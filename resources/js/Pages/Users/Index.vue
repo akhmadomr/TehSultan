@@ -202,7 +202,6 @@
                       </td>
                       <td class="px-6 py-4 space-x-2">
                         <button @click="prepareEditUser(user)" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</button>
-                        <button @click="deleteUser(user.id)" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete</button>
                         <button @click="toggleStatus(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                           {{ user.is_active ? 'Deactivate' : 'Activate' }}
                         </button>
