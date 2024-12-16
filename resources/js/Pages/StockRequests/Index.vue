@@ -107,8 +107,101 @@
                         </div>
                     </Modal>
 
-                    <!-- Table of stock requests here -->
-                    <!-- Add your table implementation -->
+                    <!-- Table of stock requests -->
+                    <div class="overflow-x-auto mt-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Outlet</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requested By</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr v-for="request in stockRequests" :key="request.id">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ formatDate(request.created_at) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ request.outlet?.nama || 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ request.user?.name || 'Unknown User' }}
+                                        <!-- Changed process.env to isDevelopment computed property -->
+                                        <span v-if="isDevelopment" class="text-xs text-gray-500">
+                                            (ID: {{ request.user?.id }})
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ request.stock_item?.name || 'N/A' }} - {{ request.request_amount }} units
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span :class="{
+                                            'px-2 py-1 text-xs rounded-full': true,
+                                            'bg-yellow-100 text-yellow-800': request.status === 'pending',
+                                            'bg-green-100 text-green-800': request.status === 'validated',
+                                            'bg-red-100 text-red-800': request.status === 'rejected'
+                                        }">
+                                            {{ request.status }}
+                                        </span>
+                                        <div v-if="request.validator" class="text-xs text-gray-500 mt-1">
+                                            Validated by: {{ request.validator.name }}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div v-if="userRole === 'gudang' && request.status === 'pending'" class="flex space-x-2">
+                                            <button @click="showValidationModal(request)" 
+                                                    class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">
+                                                Validate
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Validation Modal -->
+                    <Modal :show="validationModal" @close="closeValidationModal">
+                        <div class="p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Validate Stock Request</h3>
+                            <div class="space-y-4">
+                                <!-- Add status selection -->
+                                <div>
+                                    <InputLabel value="Status" />
+                                    <select v-model="validationForm.status" 
+                                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                        <option :value="statusOptions.PENDING">Pending</option>
+                                        <option :value="statusOptions.APPROVED">Approve</option>
+                                        <option :value="statusOptions.REJECTED">Reject</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <InputLabel for="notes" value="Notes (Optional)" />
+                                    <textarea v-model="validationForm.notes" 
+                                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                             rows="3">
+                                    </textarea>
+                                </div>
+                                
+                                <!-- ...existing buttons... -->
+                                <div class="flex justify-end space-x-2">
+                                    <button @click="closeValidationModal" 
+                                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                                        Cancel
+                                    </button>
+                                    <button @click="validateRequest" 
+                                            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                        Validate
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
                 </div>
             </div>
         </div>
@@ -117,8 +210,8 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, Link, useForm } from '@inertiajs/vue3'
-import { ref, watch, onMounted } from 'vue'
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
+import { ref, watch, onMounted, computed } from 'vue'
 import Modal from '@/Components/Modal.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import TextInput from '@/Components/TextInput.vue'
@@ -137,8 +230,14 @@ const props = defineProps({
 console.log('Stock Items received:', props.stockItems);
 console.log('Outlets received:', props.outlets);
 
+// Add more detailed debug logging
 onMounted(() => {
-    console.log('Component mounted, stockItems:', props.stockItems);
+    console.log('Component mounted with data:');
+    console.log('Stock Requests:', props.stockRequests);
+    if (props.stockRequests && props.stockRequests.length > 0) {
+        console.log('First request user data:', props.stockRequests[0].user);
+    }
+    console.log('Current authenticated user:', usePage().props.auth.user);
 });
 
 const form = useForm({
@@ -233,4 +332,51 @@ const createRequest = () => {
         }
     });
 };
+
+const userRole = computed(() => usePage().props.auth.user.role)
+const validationModal = ref(false)
+const selectedRequest = ref(null)
+
+// Add status options constant
+const statusOptions = {
+    PENDING: 'pending',
+    APPROVED: 'approved',
+    REJECTED: 'rejected'
+};
+
+const validationForm = useForm({
+    notes: '',
+    status: statusOptions.APPROVED // Set default to approved
+});
+
+const formatDate = (date) => {
+    return new Date(date).toLocaleDateString()
+}
+
+const showValidationModal = (request) => {
+    selectedRequest.value = request
+    validationModal.value = true
+}
+
+const closeValidationModal = () => {
+    validationModal.value = false
+    selectedRequest.value = null
+    validationForm.reset()
+}
+
+// Update validation method
+const validateRequest = () => {
+    if (!selectedRequest.value) return;
+
+    validationForm.patch(route('stock-requests.validate', selectedRequest.value.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            closeValidationModal();
+        }
+    });
+}
+
+// Add this computed property for development mode check
+const isDevelopment = computed(() => import.meta.env.DEV)
+
 </script>

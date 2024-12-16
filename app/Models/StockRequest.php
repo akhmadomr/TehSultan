@@ -20,6 +20,18 @@ class StockRequest extends Model
         'notes'
     ];
 
+    // Add status constants
+    const STATUS_PENDING = 'pending';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
+
+    // Add valid statuses array
+    public static $validStatuses = [
+        self::STATUS_PENDING,
+        self::STATUS_APPROVED,
+        self::STATUS_REJECTED
+    ];
+
     protected $casts = [
         'date' => 'date',
         'outlet_id' => 'integer',
@@ -29,6 +41,9 @@ class StockRequest extends Model
         'validated_by' => 'integer',
         'validated_at' => 'datetime'
     ];
+
+    // Remove or comment out this line as it might cause conflicts
+    // protected $with = ['user', 'outlet', 'stockItem'];
 
     public function outlet()
     {
@@ -46,6 +61,17 @@ class StockRequest extends Model
     }
 
     public function validatedBy()
+    {
+        return $this->belongsTo(User::class, 'validated_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'requested_by')
+            ->select(['id', 'nama', 'username']); // Explicitly select the fields we need
+    }
+
+    public function validator()
     {
         return $this->belongsTo(User::class, 'validated_by');
     }

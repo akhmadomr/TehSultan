@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\StockRequest;
 use App\Models\StockItem;
+use App\Models\Outlet;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -28,21 +30,76 @@ class StockRequestController extends BaseController
 
     public function index()
     {
-        $stockRequests = StockRequest::with(['requestedBy', 'validatedBy', 'outlet', 'stockItem'])
-            ->when(Auth::user()->role === 'crewoutlet', function ($query) {
-                return $query->where('requested_by', Auth::id());
-            })
+        try {
+            $user = Auth::user();
+            Log::info('Current user:', ['user' => (array)$user]);
+
+            $stockRequests = StockRequest::with([
+                'user' => function($query) {
+                    $query->select('id', 'nama', 'username');
+                },
+                'validator' => function($query) {
+                    $query->select('id', 'nama', 'username');
+                },
+                'outlet',
+                'stockItem'
+            ])
             ->latest()
-            ->get();
+            ->get()
+            ->map(function ($request) {
+                // Debug logging
+                Log::info('Processing request:', [
+                    'id' => $request->id,
+                    'requested_by' => $request->requested_by,
+                    'user_data' => $request->user ? $request->user->toArray() : null
+                ]);
 
-        $stockItems = StockItem::all(['id', 'name']); // Keep using 'name' since that's what's in the database
-        Log::info('Stock Items being sent to view:', $stockItems->toArray());
+                // Make sure we have user data before accessing it
+                $userData = null;
+                if ($request->user) {
+                    $userData = [
+                        'id' => $request->user->id,
+                        'name' => $request->user->nama ?: $request->user->username
+                    ];
+                }
 
-        return Inertia::render('StockRequests/Index', [
-            'stockRequests' => $stockRequests,
-            'outlets' => \App\Models\Outlet::all(['id', 'nama']),
-            'stockItems' => $stockItems
-        ]);
+                return [
+                    'id' => $request->id,
+                    'created_at' => $request->created_at,
+                    'outlet' => $request->outlet ? [
+                        'id' => $request->outlet->id,
+                        'nama' => $request->outlet->nama,
+                    ] : null,
+                    'user' => $userData,
+                    'stock_item' => $request->stockItem ? [
+                        'id' => $request->stockItem->id,
+                        'name' => $request->stockItem->name,
+                    ] : null,
+                    'request_amount' => $request->request_amount,
+                    'status' => $request->status,
+                    'validator' => $request->validator ? [
+                        'id' => $request->validator->id,
+                        'name' => $request->validator->nama ?: $request->validator->username
+                    ] : null
+                ];
+            });
+
+            // Debug full data structure
+            Log::info('Full stock requests data:', $stockRequests->toArray());
+
+            return Inertia::render('StockRequests/Index', [
+                'stockRequests' => $stockRequests,
+                'stockItems' => StockItem::all(['id', 'name']),
+                'outlets' => Outlet::all(['id', 'nama'])
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in index method:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 
     public function create()
@@ -54,6 +111,7 @@ class StockRequestController extends BaseController
     {
         try {
             Log::info('Raw request data:', $request->all());
+            Log::info('Current user:', ['user' => Auth::user() ? (array)Auth::user() : null]);
 
             $validated = $request->validate([
                 'outlet_id' => 'required|integer',
@@ -65,20 +123,28 @@ class StockRequestController extends BaseController
             DB::beginTransaction();
             
             try {
+                $userId = Auth::id();
+                $createdRequests = [];
+
                 foreach ($request->items as $item) {
                     if (!empty($item['amount']) && $item['amount'] > 0) {
-                        StockRequest::create([
+                        $stockRequest = StockRequest::create([
                             'outlet_id' => $request->outlet_id,
                             'stock_item_id' => $item['id'],
                             'request_amount' => $item['amount'],
-                            'requested_by' => Auth::id(),
-                            'status' => 'pending',
+                            'requested_by' => $userId,
+                            'status' => StockRequest::STATUS_PENDING, // Use constant
                             'notes' => $request->notes ?? null
                         ]);
+
+                        $createdRequests[] = $stockRequest->load('user', 'stockItem', 'outlet')->toArray();
                     }
                 }
 
                 DB::commit();
+                
+                Log::info('Created stock requests:', ['requests' => $createdRequests]);
+                
                 return redirect()->route('stock-requests.index')
                     ->with('success', 'Stock requests created successfully');
 
@@ -90,7 +156,7 @@ class StockRequestController extends BaseController
         } catch (\Exception $e) {
             Log::error('Store method error:', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTrace()
+                'trace' => $e->getTraceAsString()
             ]);
             
             return response()->json([
@@ -134,5 +200,28 @@ class StockRequestController extends BaseController
         $stockRequest->delete();
 
         return redirect()->route('stock-requests.index');
+    }
+
+    public function validateRequest(Request $request, StockRequest $stockRequest)
+    {
+        $validated = $request->validate([
+            'notes' => 'nullable|string|max:255',
+            'status' => 'required|in:pending,approved,rejected'
+        ]);
+
+        $stockRequest->update([
+            'status' => $validated['status'],
+            'validated_by' => Auth::id(),
+            'validated_at' => now(),
+            'notes' => $validated['notes'] ?? null
+        ]);
+
+        $statusMessage = match($validated['status']) {
+            'approved' => 'approved',
+            'rejected' => 'rejected',
+            default => 'updated'
+        };
+
+        return redirect()->back()->with('success', "Stock request {$statusMessage} successfully");
     }
 }
