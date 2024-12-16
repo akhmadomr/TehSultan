@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Outlet extends Model
 {
     protected $fillable = [
-        'name',
-        'address',
-        'phone',
-        'manager_id'
+        'nama',
+        'alamat',
+        'foto',
     ];
 
     public function stocks(): HasMany

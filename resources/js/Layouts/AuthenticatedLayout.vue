@@ -27,7 +27,8 @@ const navigationMenus = {
     crewoutlet: [
         { name: 'Dashboard', route: 'crew.dashboard' },
         { name: 'Stock', route: 'stock.index' },
-        { name: 'Financial', route: 'financial.reports' }
+        { name: 'Financial', route: 'financial.reports' },
+        { name: 'Stock Requests', route: 'stock-requests.index' }
     ],
     gudang: [
         { name: 'Dashboard', route: 'gudang.dashboard' },

@@ -7,6 +7,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Middleware\CheckStockRequestRoles;
 use App\Http\Controllers\StockRequestController;
 use App\Http\Controllers\StockItemController;
 use App\Http\Controllers\FinancialTotalController;
@@ -122,7 +123,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     Route::middleware(CheckRole::class . ':gudang')->group(function () {
         Route::resource('inventory', StockController::class);
-        Route::resource('stock-requests', StockRequestController::class);
+    });
+
+    // Stock Request Routes - Accessible by both gudang and crewoutlet
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::controller(StockRequestController::class)->group(function () {
+            Route::get('/stock-requests', 'index')->name('stock-requests.index');
+            Route::post('/stock-requests', 'store')->name('stock-requests.store'); // This is the important route
+            Route::get('/stock-requests/create', 'create')->name('stock-requests.create');
+            Route::get('/stock-requests/{stockRequest}', 'show')->name('stock-requests.show');
+            Route::patch('/stock-requests/{stockRequest}', 'update')->name('stock-requests.update');
+            Route::delete('/stock-requests/{stockRequest}', 'destroy')->name('stock-requests.destroy');
+            
+            // Gudang only route
+            Route::patch('/stock-requests/{stockRequest}/validate', 'validateRequest')
+                ->middleware(CheckRole::class . ':gudang')
+                ->name('stock-requests.validate');
+        });
     });
 });
 
