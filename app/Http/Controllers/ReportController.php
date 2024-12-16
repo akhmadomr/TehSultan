@@ -206,7 +206,7 @@ class ReportController extends Controller
             ->paginate(10);
 
         // Add validation messages to each report
-        $reports->getCollection()->transform(function ($report) {
+        $reports->through(function ($report) {
             $report->validation_messages = $report->getValidationMessages();
             return $report;
         });

@@ -5,8 +5,10 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\CrewOutletController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\GudangDashboardController; // Add this import
 use App\Http\Middleware\CheckStockRequestRoles;
 use App\Http\Controllers\StockRequestController;
 use App\Http\Controllers\StockItemController;
@@ -92,9 +94,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Crew Outlet routes  
-    Route::get('/crew-dashboard', function () {
-        return Inertia::render('Dashboard/CrewOutletDashboard');
-    })->middleware(CheckRole::class . ':crewoutlet')->name('crew.dashboard');
+    Route::get('/crew-dashboard', [CrewOutletController::class, 'dashboard'])
+        ->middleware(CheckRole::class . ':crewoutlet')
+        ->name('crew.dashboard');
     
     Route::middleware(CheckRole::class . ':crewoutlet')->group(function () {
         Route::resource('stock', StockController::class);
@@ -117,9 +119,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // Gudang routes
-    Route::get('/gudang-dashboard', function () {
-        return Inertia::render('Dashboard/GudangDashboard');
-    })->middleware(CheckRole::class . ':gudang')->name('gudang.dashboard');
+    Route::get('/gudang-dashboard', [GudangDashboardController::class, 'index'])
+        ->middleware(CheckRole::class . ':gudang')
+        ->name('gudang.dashboard');
     
     Route::middleware(CheckRole::class . ':gudang')->group(function () {
         Route::resource('inventory', StockController::class);
