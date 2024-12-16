@@ -166,7 +166,7 @@ const filteredReports = computed(() => {
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-2xl font-bold text-gray-700 mt-2">{{ stockReports.length }}</p>
+                        <p class="text-2xl font-bold text-gray-700 mt-2">{{ stockReports }}</p>
                     </div>
 
                     <!-- Financial Reports Card -->
@@ -179,7 +179,7 @@ const filteredReports = computed(() => {
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-2xl font-bold text-gray-700 mt-2">{{ financialReports.length }}</p>
+                        <p class="text-2xl font-bold text-gray-700 mt-2">{{ financialReports }}</p>
                     </div>
                 </div>
 
@@ -187,7 +187,7 @@ const filteredReports = computed(() => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-[#CBF3F0] mt-6">
                     <div class="p-4 sm:p-6">
                         <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
-                            <h2 class="text-xl font-semibold text-gray-700 mb-4 sm:mb-0">
+user                            <h2 class="text-xl font-semibold text-gray-700 mb-4 sm:mb-0">
                                 Recent Reports
                             </h2>
                             

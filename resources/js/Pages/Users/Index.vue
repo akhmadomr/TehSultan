@@ -12,51 +12,78 @@
               <!-- Add User Form -->
               <div v-if="showAddUserForm" class="popup">
                 <div class="popup-content">
-                  <h2 class="text-xl font-semibold mb-4">Add New User</h2>
+                  <h2 class="text-2xl font-semibold mb-6">Add New User</h2>
                   <form @submit.prevent="addUser">
-                    <div class="mb-4">
-                      <label for="nama" class="block text-sm font-medium">Nama</label>
-                      <input v-model="newUser.nama" type="text" id="nama" class="w-full p-2 border border-gray-300 rounded mt-1" required />
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+                      <div class="space-y-2">
+                        <label for="nama" class="block text-sm font-medium text-gray-700">Nama</label>
+                        <input v-model="newUser.nama" type="text" id="nama" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required />
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input v-model="newUser.email" type="email" id="email" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input v-model="newUser.username" type="text" id="username" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required />
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                        <select v-model="newUser.role" id="role" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+                          <option value="">Select Role</option>
+                          <option value="manager">Manager</option>
+                          <option value="crewoutlet">Crew Outlet</option>
+                          <option value="gudang">Gudang</option>
+                        </select>
+                      </div>
+
+                      <div class="col-span-2 space-y-2">
+                        <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
+                        <textarea v-model="newUser.alamat" id="alamat" rows="3"
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="no_telp" class="block text-sm font-medium text-gray-700">No. Telepon</label>
+                        <input v-model="newUser.no_telp" type="text" id="no_telp" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="tanggal_bergabung" class="block text-sm font-medium text-gray-700">Tanggal Bergabung</label>
+                        <input v-model="newUser.tanggal_bergabung" type="date" id="tanggal_bergabung" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input v-model="newUser.password" type="password" id="password" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required />
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input v-model="newUser.password_confirmation" type="password" id="password_confirmation" 
+                          class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" required />
+                      </div>
                     </div>
-                    <div class="mb-4">
-                      <label for="email" class="block text-sm font-medium">Email</label>
-                      <input v-model="newUser.email" type="email" id="email" class="w-full p-2 border border-gray-300 rounded mt-1" />
-                    </div>
-                    <div class="mb-4">
-                      <label for="alamat" class="block text-sm font-medium">Alamat</label>
-                      <textarea v-model="newUser.alamat" id="alamat" class="w-full p-2 border border-gray-300 rounded mt-1"></textarea>
-                    </div>
-                    <div class="mb-4">
-                      <label for="no_telp" class="block text-sm font-medium">No. Telepon</label>
-                      <input v-model="newUser.no_telp" type="text" id="no_telp" class="w-full p-2 border border-gray-300 rounded mt-1" />
-                    </div>
-                    <div class="mb-4">
-                      <label for="tanggal_bergabung" class="block text-sm font-medium">Tanggal Bergabung</label>
-                      <input v-model="newUser.tanggal_bergabung" type="date" id="tanggal_bergabung" class="w-full p-2 border border-gray-300 rounded mt-1" />
-                    </div>
-                    <div class="mb-4">
-                      <label for="username" class="block text-sm font-medium">Username</label>
-                      <input v-model="newUser.username" type="text" id="username" class="w-full p-2 border border-gray-300 rounded mt-1" required />
-                    </div>
-                    <div class="mb-4">
-                      <label for="role" class="block text-sm font-medium">Role</label>
-                      <select v-model="newUser.role" id="role" class="w-full p-2 border border-gray-300 rounded mt-1" required>
-                        <option value="manager">Manager</option>
-                        <option value="crewoutlet">Crew Outlet</option>
-                        <option value="gudang">Gudang</option>
-                      </select>
-                    </div>
-                    <div class="mb-4">
-                      <label for="password" class="block text-sm font-medium">Password</label>
-                      <input v-model="newUser.password" type="password" id="password" class="w-full p-2 border border-gray-300 rounded mt-1" required />
-                    </div>
-                    <div class="mb-4">
-                      <label for="password_confirmation" class="block text-sm font-medium">Confirm Password</label>
-                      <input v-model="newUser.password_confirmation" type="password" id="password_confirmation" class="w-full p-2 border border-gray-300 rounded mt-1" required />
-                    </div>
-                    <div class="flex justify-end">
-                      <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Save</button>
-                      <button @click="showAddUserForm = false" class="ml-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+
+                    <div class="flex justify-end space-x-4 mt-8">
+                      <button type="button" @click="showAddUserForm = false" 
+                        class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                        Cancel
+                      </button>
+                      <button type="submit" 
+                        class="px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        Save
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -382,9 +409,11 @@ export default {
 
 .popup-content {
   background: white;
-  padding: 24px;
+  padding: 32px; /* Increased padding */
   border-radius: 8px;
   max-height: 90vh;
+  width: 90%; /* Set width */
+  max-width: 800px; /* Increased max-width */
   overflow-y: auto;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
