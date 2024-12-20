@@ -9,6 +9,7 @@ use App\Http\Controllers\CrewOutletController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\GudangDashboardController; // Add this import
+use App\Http\Controllers\FinancialReportController; // Add this import
 use App\Http\Middleware\CheckStockRequestRoles;
 use App\Http\Controllers\StockRequestController;
 use App\Http\Controllers\StockItemController;
@@ -91,6 +92,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('manager.reports.financial');
         Route::patch('/manager/reports/{report}/validate', [ReportController::class, 'validateReport'])
             ->name('manager.reports.validate');
+        
+        Route::patch('/manager/financial-reports/{report}/validate', [FinancialReportController::class, 'validate'])
+            ->name('manager.financial-reports.validate');
     });
 
     // Crew Outlet routes  

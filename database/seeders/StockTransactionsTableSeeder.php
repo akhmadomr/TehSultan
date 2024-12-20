@@ -22,6 +22,8 @@ class StockTransactionsTableSeeder extends Seeder
                 'stock_sisa' => 90,
                 'stock_terpakai' => 20,
                 'status' => 'completed',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'report_id' => 2,
@@ -32,6 +34,8 @@ class StockTransactionsTableSeeder extends Seeder
                 'stock_sisa' => 180,
                 'stock_terpakai' => 40,
                 'status' => 'completed',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
     }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class OutletsTableSeeder extends Seeder
 {
@@ -12,16 +13,24 @@ class OutletsTableSeeder extends Seeder
      */
     public function run(): void
     {
+        $now = Carbon::now();
+        
         DB::table('outlets')->insert([
             [
-                'nama' => 'Outlet 1',
-                'alamat' => 'Address 1',
+                'id' => 1,
+                'nama' => 'Outlet Pusat',
+                'alamat' => 'Jl. Utama No. 1, Kota',
                 'foto' => null,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
-                'nama' => 'Outlet 2',
-                'alamat' => 'Address 2',
+                'id' => 2,
+                'nama' => 'Outlet Cabang',
+                'alamat' => 'Jl. Cabang No. 2, Kota',
                 'foto' => null,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
         ]);
     }

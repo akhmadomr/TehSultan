@@ -6,27 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('stock_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('outlet_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained();
+            $table->foreignId('outlet_id')->constrained('outlets')->onDelete('cascade');
+            $table->foreignId('stock_item_id')->constrained('stock_items')->onDelete('cascade');
             $table->foreignId('requested_by')->constrained('users');
             $table->foreignId('validated_by')->nullable()->constrained('users');
             $table->integer('request_amount');
-            $table->enum('status', ['pending', 'approved', 'rejected']);
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamp('validated_at')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('stock_requests');

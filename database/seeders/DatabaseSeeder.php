@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,14 +12,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            OutletsTableSeeder::class,
-            ProductsTableSeeder::class,
-            ReportsTableSeeder::class,
-            StockRequestsTableSeeder::class,
-            StockTransactionsTableSeeder::class,
-            UsersTableSeeder::class,
-            StockItemSeeder::class,
+            UsersTableSeeder::class,        // Users should be first as they might be referenced
+            OutletsTableSeeder::class,      // Outlets might be referenced by products
+            ProductsTableSeeder::class, 
+            ReportsTableSeeder::class,   
+            StockItemsTableSeeder::class,   // Correct position after Products and Outlets
+            StockTransactionsTableSeeder::class, // Transactions need stock items
+            StockRequestsTableSeeder::class,     // Requests need stock items
+            StockSeeder::class,            // Added StockSeeder
+   // Reports might depend on all previous data
         ]);
-
     }
 }

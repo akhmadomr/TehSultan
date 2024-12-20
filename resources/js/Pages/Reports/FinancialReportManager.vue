@@ -41,10 +41,10 @@ const viewDetails = (report) => {
 const updateStatus = async (reportId, status) => {
     try {
         // Add debug logging
-        console.log('Route:', route('manager.reports.validate', reportId));
+        console.log('Route:', route('manager.financial-reports.validate', reportId));
         console.log('Updating report', reportId, 'with status', status);
 
-        const response = await axios.patch(route('manager.reports.validate', reportId), {
+        const response = await axios.patch(route('manager.financial-reports.validate', reportId), {
             status: status
         });
 

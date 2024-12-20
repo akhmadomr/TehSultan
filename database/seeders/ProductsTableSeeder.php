@@ -14,14 +14,18 @@ class ProductsTableSeeder extends Seeder
     {
         DB::table('products')->insert([
             [
-                'nama' => 'Product 1',
-                'is_default' => false,
-
+                'name' => 'Product 1',
+                'description' => 'Description for product 1',
+                'price' => 25000.00,
+                'category' => 'Category A',
+                'sku' => 'PRD001',
             ],
             [
-                'nama' => 'Product 2',
-                'is_default' => false,
-
+                'name' => 'Product 2',
+                'description' => 'Description for product 2',
+                'price' => 35000.00,
+                'category' => 'Category B',
+                'sku' => 'PRD002',
             ],
         ]);
     }
