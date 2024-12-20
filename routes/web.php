@@ -70,16 +70,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->middleware(CheckRole::class . ':manager')->name('manager.dashboard');
     
     Route::middleware(CheckRole::class . ':manager')->group(function () {
-        Route::resource('manager/users', UserController::class)->names([
-            'index' => 'manager.users.index',
-            'create' => 'manager.users.create',
-            'store' => 'manager.users.store',
-            'show' => 'manager.users.show',
-            'edit' => 'manager.users.edit',
-            'update' => 'manager.users.update',
-            'destroy' => 'manager.users.destroy',
-        ]);
+        // Individual routes first
+        Route::get('manager/users', [UserController::class, 'index'])->name('manager.users.index');
+        Route::post('manager/users', [UserController::class, 'store'])->name('manager.users.store');
+        Route::get('manager/users/{user}', [UserController::class, 'show'])->name('manager.users.show');
+        Route::patch('manager/users/{user}', [UserController::class, 'update'])->name('manager.users.update');
+        Route::delete('manager/users/{user}', [UserController::class, 'destroy'])->name('manager.users.destroy');
         Route::patch('manager/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('manager.users.toggle-status');
+        
         Route::resource('reports', ReportController::class);
         
         // Add StockItem routes

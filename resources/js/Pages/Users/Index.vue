@@ -314,21 +314,30 @@ export default {
     // ...existing methods...
     // Update other methods to use window.location.reload() instead of manual data updates
     updateUser() {
-      const form = useForm({
-        ...this.editUser
-      });
-
-      if (!form.password) {
-        delete form.password;
-        delete form.password_confirmation;
+      const formData = { ...this.editUser };
+      
+      if (!formData.password) {
+        delete formData.password;
+        delete formData.password_confirmation;
       }
 
-      form.put(route('manager.users.update', this.editUser.id), {
-        onSuccess: () => {
-          this.showEditUserForm = false;
-          window.location.reload();
-        },
-        preserveScroll: true
+      axios.patch(`/manager/users/${this.editUser.id}`, formData, {
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      })
+      .then(response => {
+        this.showEditUserForm = false;
+        if (response.data.message) {
+          alert(response.data.message);
+        }
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error updating user:', error);
+        alert(error.response?.data?.message || 'An error occurred while updating the user.');
       });
     },
     deleteUser(id) {
