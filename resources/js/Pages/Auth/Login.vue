@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 
 defineProps({
     canResetPassword: {
@@ -14,6 +15,10 @@ defineProps({
     status: {
         type: String,
     },
+    recaptchaKey: {
+        type: String,
+        required: true
+    },
 });
 
 const form = useForm({
@@ -21,13 +26,40 @@ const form = useForm({
     role: '',
     password: '',
     remember: false,
+    'g-recaptcha-response': '',
 });
 
 const submit = () => {
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        alert('Please complete the reCAPTCHA verification');
+        return;
+    }
+    
+    form['g-recaptcha-response'] = recaptchaResponse;
     form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+        onFinish: () => {
+            form.reset('password');
+            // Add check before resetting reCAPTCHA
+            if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
+                try {
+                    grecaptcha.reset();
+                } catch (e) {
+                    console.log('reCAPTCHA reset not needed after successful login');
+                }
+            }
+        },
     });
 };
+
+// Add reCAPTCHA script loading
+onMounted(() => {
+    const recaptchaScript = document.createElement('script')
+    recaptchaScript.src = 'https://www.google.com/recaptcha/api.js'
+    recaptchaScript.async = true
+    recaptchaScript.defer = true
+    document.head.appendChild(recaptchaScript)
+});
 </script>
 
 <template>
@@ -36,9 +68,8 @@ const submit = () => {
         
         <!-- Main container for login page -->
         <div class="login-container min-h-screen flex justify-center items-center bg-white">
-            <!-- Login Box (Fixed size with bigger width) -->
+            <!-- Login Box -->
             <div class="login-box w-[450px] bg-white shadow-lg rounded-lg overflow-hidden">
-
                 <!-- Left Section: Brand Description -->
                 <div class="left-section w-full flex flex-col items-center justify-center p-6 bg-gradient-to-r from-orange-500 to-yellow-500 text-center">
                     <h1 class="text-3xl font-bold text-white mt-4">Teh Sultan Indonesia</h1>
@@ -75,7 +106,7 @@ const submit = () => {
                             >
                                 <option value="manager">Manager</option>
                                 <option value="crewoutlet">Crew Outlet</option>
-                                <option value="crewgudang">Crew Gudang</option>
+                                <option value="gudang">Crew Gudang</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.role" />
                         </div>
@@ -109,6 +140,16 @@ const submit = () => {
                             >
                                 Forgot password?
                             </Link>
+                        </div>
+
+                        <!-- reCAPTCHA -->
+                        <div class="mb-4">
+                            <div 
+                                class="g-recaptcha flex justify-center" 
+                                :data-sitekey="recaptchaKey"
+                                data-theme="light"
+                            ></div>
+                            <InputError class="mt-2" :message="form.errors['g-recaptcha-response']" />
                         </div>
 
                         <!-- Submit Button -->
@@ -190,5 +231,14 @@ const submit = () => {
     .right-section {
         padding: 1.5rem;
     }
+}
+
+/* Add styling for reCAPTCHA container */
+.g-recaptcha {
+    margin: 1rem 0;
+}
+/* Center the reCAPTCHA if needed */
+.g-recaptcha > div {
+    margin: 0 auto;
 }
 </style>
