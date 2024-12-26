@@ -47,11 +47,14 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+    Route::get('/verify-update/{token}', [ProfileController::class, 'verifyUpdate'])->name('update.verify');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 Route::middleware(['auth', 'verified'])->group(function () {
     // Manager routes
     Route::get('/manager-dashboard', function () {
@@ -146,5 +149,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 });
+
+// Add this line before require __DIR__.'/auth.php'
+Auth::routes(['verify' => true]);
 
 require __DIR__.'/auth.php';
