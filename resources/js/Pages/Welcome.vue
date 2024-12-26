@@ -2,20 +2,20 @@
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 
-// Props untuk authUser, canLogin, dan canRegister
-defineProps({
+const props = defineProps({
     authUser: Object,
     canLogin: Boolean,
     canRegister: Boolean,
 });
 
-// Fungsi untuk logout
 function logout() {
-    axios.post(route('logout')).then(() => {
-        window.location.href = '/login'; // Redirect ke halaman login setelah logout
-    }).catch(error => {
-        console.error('Error logging out:', error);
-    });
+    axios.post(route('logout'))
+        .then(() => {
+            window.location.href = '/login';
+        })
+        .catch(error => {
+            console.error('Error logging out:', error);
+        });
 }
 </script>
 
