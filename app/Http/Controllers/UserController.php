@@ -2,10 +2,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\PendingUpdate;
+use App\Notifications\UpdateVerificationNotification;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth; // Add this import
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -53,15 +56,56 @@ class UserController extends Controller
             'password' => $request->filled('password') ? 'string|min:8|confirmed' : ''
         ]);
 
+        // Only include password in validated data if it was provided
         if ($request->filled('password')) {
-            $validated['password'] = Hash::make($validated['password']);
-        } else {
-            unset($validated['password']);
+            $validated['password'] = Hash::make($request->password);
         }
 
-        $user->update($validated);
+        // Create verification token
+        $token = Str::random(64);
+        $expiresAt = now()->addHours(24);
 
-        return response()->json(['message' => 'User updated successfully']);
+        // Store pending update, without password if not provided
+        PendingUpdate::create([
+            'user_id' => $user->id,
+            'data' => $validated,
+            'type' => 'user_management',
+            'verification_token' => $token,
+            'expires_at' => $expiresAt,
+        ]);
+
+        // Send verification email
+        $user->notify(new UpdateVerificationNotification($token, 'user management'));
+
+        return response()->json([
+            'message' => 'A verification link has been sent to your email address.'
+        ]);
+    }
+
+    public function verifyUpdate($token)
+    {
+        $pendingUpdate = PendingUpdate::where('verification_token', $token)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (!$pendingUpdate) {
+            return redirect()->route('manager.users.index')
+                ->with('error', 'Invalid or expired verification token.');
+        }
+
+        $user = User::find($pendingUpdate->user_id);
+        $updateData = $pendingUpdate->data;
+
+        // If password is not set in the update data, remove it to avoid errors
+        if (!isset($updateData['password'])) {
+            unset($updateData['password']);
+        }
+
+        $user->update($updateData);
+        $pendingUpdate->delete();
+
+        return redirect()->route('manager.users.index')
+            ->with('success', 'User information has been updated successfully.');
     }
 
     public function destroy(User $user)

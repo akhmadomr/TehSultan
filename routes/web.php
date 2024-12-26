@@ -96,6 +96,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         Route::patch('/manager/financial-reports/{report}/validate', [FinancialReportController::class, 'validate'])
             ->name('manager.financial-reports.validate');
+
+        // Add this route inside the manager middleware group:
+        Route::get('/manager/users/verify-update/{token}', [UserController::class, 'verifyUpdate'])
+            ->name('manager.users.verify-update');
     });
 
     // Crew Outlet routes  

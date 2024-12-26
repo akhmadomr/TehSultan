@@ -330,10 +330,7 @@ export default {
       })
       .then(response => {
         this.showEditUserForm = false;
-        if (response.data.message) {
-          alert(response.data.message);
-        }
-        window.location.reload();
+        alert(response.data.message || 'A verification email has been sent. Please check your email to verify the changes.');
       })
       .catch(error => {
         console.error('Error updating user:', error);

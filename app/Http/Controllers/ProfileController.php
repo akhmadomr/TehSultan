@@ -94,13 +94,28 @@ class ProfileController extends Controller
             ->firstOrFail();
 
         $user = $pendingUpdate->user;
+        $updateData = $pendingUpdate->data;
 
-        if ($pendingUpdate->type === 'profile') {
-            $user->update($pendingUpdate->data);
-        } else {
-            $user->update([
-                'password' => $pendingUpdate->data['password']
-            ]);
+        switch ($pendingUpdate->type) {
+            case 'profile':
+                $user->update($updateData);
+                break;
+                
+            case 'password':
+                if (isset($updateData['password'])) {
+                    $user->update([
+                        'password' => $updateData['password']
+                    ]);
+                }
+                break;
+
+            case 'user_management':
+                // Remove password if not set to avoid errors
+                if (!isset($updateData['password'])) {
+                    unset($updateData['password']);
+                }
+                $user->update($updateData);
+                break;
         }
 
         $pendingUpdate->delete();
